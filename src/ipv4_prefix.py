@@ -6,6 +6,12 @@ class IPv4Prefix:
         self._length = length
         self._address = address
 
+    def __eq__(self, other):
+        if not isinstance(other, IPv4Prefix):
+            return False
+        return self._length == other._length \
+                and self._address == other._address
+
     def __str__(self):
         return f"{self._address}/{self._length}"
 

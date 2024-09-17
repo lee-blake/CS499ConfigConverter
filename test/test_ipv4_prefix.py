@@ -61,3 +61,32 @@ def test_invalid_mask_throws_error(mask_string):
     with pytest.raises(ValueError):
         IPv4Prefix.from_string("0.0.0.0", mask_string)
 
+
+@pytest.mark.parametrize(
+    "address_string,mask_string",
+    (
+        ("0.0.0.0","0.0.0.0"),
+        ("0.0.0.0","255.255.255.255"),
+        ("10.0.0.1","255.255.255.255"),
+        ("10.0.0.0","255.0.0.0")
+    )
+
+)
+def test_equality_for_equal_parameters_from_string(address_string, mask_string):
+    prefix1 = IPv4Prefix.from_string(address_string, mask_string)
+    prefix2 = IPv4Prefix.from_string(address_string, mask_string)
+    assert prefix1 == prefix2
+
+def test_inequality_based_on_address():
+    prefix1 = IPv4Prefix.from_string("0.0.0.0", "255.0.0.0")
+    prefix2 = IPv4Prefix.from_string("1.0.0.0", "255.0.0.0")
+    assert prefix1 != prefix2
+
+def test_inequality_based_on_length():
+    prefix1 = IPv4Prefix.from_string("1.0.0.0", "255.0.0.0")
+    prefix2 = IPv4Prefix.from_string("1.0.0.0", "255.128.0.0")
+    assert prefix1 != prefix2
+
+def test_inequality_of_other_type():
+    prefix = IPv4Prefix.from_string("1.0.0.0", "255.0.0.0")
+    assert prefix != "x"
