@@ -1,6 +1,7 @@
 import re
 
 from ipv4_prefix import IPv4Prefix
+from topology import RouterInterface
 
 
 class ConfigFileConverter:
@@ -17,8 +18,9 @@ class ConfigFileConverter:
     )
 
     
-    def __init__(self, config_lines, topology_tracker=None):
+    def __init__(self, config_lines, topology_builder):
         self._config_lines = config_lines
+        self._topology_builder = topology_builder
         self._current_hostname = None
 
     def parse(self):
@@ -51,7 +53,6 @@ class ConfigFileConverter:
     def _handle_hostname_instruction(self, instruction):
         hostname = self.hostname_instruction.match(instruction).group(1)
         self._current_hostname = hostname
-        print(f"Hostname found: {hostname}")
 
     def _handle_interface_instruction(self, block_lines):
         block_iter = iter(block_lines)
@@ -66,5 +67,8 @@ class ConfigFileConverter:
                 if match:
                     prefix = IPv4Prefix.from_string(match.group(1), match.group(2))
         if prefix:       
-            print(f"\t{interface_name}: {prefix}")
+            router_interface = RouterInterface(
+                    self._current_hostname, interface_name
+            )
+            self._topology_builder.register_connection(router_interface, prefix)
 

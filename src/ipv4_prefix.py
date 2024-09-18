@@ -12,6 +12,9 @@ class IPv4Prefix:
         return self._length == other._length \
                 and self._address == other._address
 
+    def __hash__(self):
+        return hash(self._length)
+
     def __str__(self):
         return f"{self._address}/{self._length}"
 
