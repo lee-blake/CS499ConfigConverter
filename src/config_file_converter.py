@@ -46,7 +46,10 @@ class ConfigFileConverter:
         interface_block_lines = [first_line]
         line = first_line
         while not self.end_block_instruction.match(line):
-            line = next(iterator)
+            try:
+                line = next(iterator)
+            except StopIteration:
+                raise ValueError(f"Block for router '{self._current_hostname}' starting with '{first_line}' reached EOF without closing!")
             interface_block_lines.append(line)
         return interface_block_lines
 

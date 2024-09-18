@@ -6,14 +6,19 @@ from ipv4_prefix import IPv4Prefix
 from topology import TopologyBuilder
 
 def main(argv):
-    filename = argv[1]
-    # Original configs are NOT UTF-8. Latin1 seems to decode correctly,
-    # so we shall use that instead.
-    fh = codecs.open(filename, "rb", encoding="latin1")
     topology_builder = TopologyBuilder()
-    converter = ConfigFileConverter(fh.readlines(), topology_builder)
-    converter.parse()
-    fh.close()
+    filenames = argv[1:]
+    for filename in filenames:
+        # Original configs are NOT UTF-8. Latin1 seems to decode correctly,
+        # so we shall use that instead.
+        fh = codecs.open(filename, "rb", encoding="latin1")
+        converter = ConfigFileConverter(fh.readlines(), topology_builder)
+        try:
+            converter.parse()
+        except Exception as e:
+            print(f"Error in {filename}")
+            print(e)
+        fh.close()
     topology_builder.write_topology(None)
 
 
