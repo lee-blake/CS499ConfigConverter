@@ -19,7 +19,10 @@ def main(argv):
             print(f"Error in {filename}")
             print(e)
         fh.close()
-    topology_builder.write_topology(None)
+    class PrintWriter:
+        def write(self, stuff):
+            print(stuff, end="")
+    topology_builder.write_topology(PrintWriter())
 
 
 if __name__ == "__main__":
