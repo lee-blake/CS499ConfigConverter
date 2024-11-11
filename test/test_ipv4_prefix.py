@@ -65,6 +65,47 @@ def test_invalid_mask_throws_error(mask_string):
 @pytest.mark.parametrize(
     "address_string,mask_string",
     (
+        ("128.0.0.0","0.0.0.0"),
+        ("0.0.0.1","255.255.0.0"),
+    )
+
+)
+def test_address_beyond_mask_throws_error(address_string, mask_string):
+    with pytest.raises(ValueError):
+        IPv4Prefix.from_string(address_string, mask_string)
+
+@pytest.mark.parametrize(
+        "address_string,mask_string,expected",
+        (
+            ("0.0.0.0","0.0.0.0","0.0.0.0/0"),
+            ("1.2.0.0","255.254.0.0","1.2.0.0/15"),
+            ("1.128.127.255","255.255.255.255","1.128.127.255/32")
+        )
+)
+def test_rationalization_returns_same_values_when_not_overextended(
+        address_string, mask_string, expected
+):
+    prefix = IPv4Prefix.rationalize_from_string(address_string, mask_string)
+    assert str(prefix) == expected
+
+@pytest.mark.parametrize(
+        "address_string,mask_string,expected",
+        (
+            ("0.0.0.1","0.0.0.0","0.0.0.0/0"),
+            ("1.3.0.0","255.254.0.0","1.2.0.0/15"),
+        )
+)
+def test_rationalization_returns_good_values_when_overextended(
+        address_string, mask_string, expected
+):
+    prefix = IPv4Prefix.rationalize_from_string(address_string, mask_string)
+    assert str(prefix) == expected
+
+
+
+@pytest.mark.parametrize(
+    "address_string,mask_string",
+    (
         ("0.0.0.0","0.0.0.0"),
         ("0.0.0.0","255.255.255.255"),
         ("10.0.0.1","255.255.255.255"),
