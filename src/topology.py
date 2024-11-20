@@ -41,7 +41,7 @@ class TopologyBuilder:
     def write_topology(self, writeable_object):
         for subnet_prefix in self._connection_map.keys():
             subnet_neighbors_str = "\t".join(f"{router_interface.router_name} {router_interface.interface_name}" for router_interface in self._connection_map[subnet_prefix])
-            subnet_summary_str = f"{subnet_neighbors_str}\t{subnet_prefix}\n"
+            subnet_summary_str = f"{subnet_prefix}\t{subnet_neighbors_str}\n"
             writeable_object.write(subnet_summary_str)
 
             

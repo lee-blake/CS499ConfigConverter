@@ -14,9 +14,8 @@ class ConfigFileConverter:
 
     no_ip_or_shutdown_instruction = re.compile(r"\s+(shutdown|no ip address)\s*$")
     ip_address_instruction = re.compile(
-            f"\\s+ip address ({ip_notation_re}) ({ip_notation_re})"
+            f"\\s*ip address ({ip_notation_re}) ({ip_notation_re})"
     )
-
     
     def __init__(self, config_lines, topology_builder):
         self._config_lines = config_lines
@@ -68,7 +67,7 @@ class ConfigFileConverter:
             else:
                 match = self.ip_address_instruction.match(line)
                 if match:
-                    prefix = IPv4Prefix.from_string(match.group(1), match.group(2))
+                    prefix = IPv4Prefix.rationalize_from_string(match.group(1), match.group(2))
         if prefix:       
             router_interface = RouterInterface(
                     self._current_hostname, interface_name
