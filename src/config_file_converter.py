@@ -14,9 +14,8 @@ class ConfigFileConverter:
 
     no_ip_or_shutdown_instruction = re.compile(r"\s+(shutdown|no ip address)\s*$")
     ip_address_instruction = re.compile(
-            f"\\s+ip address ({ip_notation_re}) ({ip_notation_re})"
+            f"\\s*ip address ({ip_notation_re}) ({ip_notation_re})"
     )
-
     
     def __init__(self, config_lines, topology_builder):
         self._config_lines = config_lines
