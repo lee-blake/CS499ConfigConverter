@@ -68,7 +68,7 @@ class ConfigFileConverter:
             else:
                 match = self.ip_address_instruction.match(line)
                 if match:
-                    prefix = IPv4Prefix.from_string(match.group(1), match.group(2))
+                    prefix = IPv4Prefix.rationalize_from_string(match.group(1), match.group(2))
         if prefix:       
             router_interface = RouterInterface(
                     self._current_hostname, interface_name
